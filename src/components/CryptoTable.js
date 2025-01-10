@@ -1,9 +1,60 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent } from "../ui/card";
 import { ArrowUpDown, Cpu, HardDrive, MonitorSmartphone } from 'lucide-react';
-import { fetchCoinData } from '../lib/api.js';
+
+// Temporary data fetching function
+const fetchCoinData = async () => {
+  // Sample data for demonstration
+  return [
+    {
+      rank: 1,
+      name: "Bitcoin",
+      symbol: "BTC",
+      price: 65432.10,
+      marketCap: 1200000000000,
+      algorithm: "SHA-256",
+      dailyCoins: 900,
+      dailyEmissions: "11.25 BTC",
+      emissionsValue: 736111.125,
+      emissionsPercentage: 45.2,
+      emissionsExBTC: 0,
+      activePools: 42,
+      hardware: "ASIC",
+    },
+    {
+      rank: 2,
+      name: "Ethereum Classic",
+      symbol: "ETC",
+      price: 25.78,
+      marketCap: 3000000000,
+      algorithm: "Ethash",
+      dailyCoins: 1440,
+      dailyEmissions: "2.88 ETC",
+      emissionsValue: 74.2464,
+      emissionsPercentage: 8.5,
+      emissionsExBTC: 15.5,
+      activePools: 22,
+      hardware: "GPU",
+    },
+    {
+      rank: 3,
+      name: "Monero",
+      symbol: "XMR",
+      price: 156.78,
+      marketCap: 2800000000,
+      algorithm: "RandomX",
+      dailyCoins: 720,
+      dailyEmissions: "0.6 XMR",
+      emissionsValue: 94.068,
+      emissionsPercentage: 5.2,
+      emissionsExBTC: 9.5,
+      activePools: 15,
+      hardware: "CPU",
+    }
+  ];
+};
 
 const CryptoTable = () => {
   const [coins, setCoins] = useState([]);
