@@ -1,111 +1,78 @@
-'use client';
-
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 
-// Mining algorithm mappings for top coins
-const COIN_ALGORITHMS = {
-  'bitcoin': 'SHA-256',
-  'ethereum-classic': 'Ethash',
-  'dogecoin': 'Scrypt',
-  'litecoin': 'Scrypt',
-  'monero': 'RandomX',
-  'ravencoin': 'KAWPOW',
-  'ergo': 'Autolykos v2',
-  'flux': 'ZelHash',
-  'bitcoin-gold': 'Zhash',
-  'kaspa': 'Heavy Hash',
-};
-
-// Hardware type mappings
-const COIN_HARDWARE = {
-  'bitcoin': 'ASIC',
-  'ethereum-classic': 'GPU',
-  'dogecoin': 'ASIC',
-  'litecoin': 'ASIC',
-  'monero': 'CPU',
-  'ravencoin': 'GPU',
-  'ergo': 'GPU',
-  'flux': 'GPU',
-  'bitcoin-gold': 'GPU',
-  'kaspa': 'GPU',
-};
-
-// Estimated daily coins generated
-const DAILY_COINS = {
-  'bitcoin': 900,
-  'ethereum-classic': 14400,
-  'dogecoin': 14400000,
-  'litecoin': 7200,
-  'monero': 720,
-  'ravencoin': 72000,
-  'ergo': 86400,
-  'flux': 43200,
-  'bitcoin-gold': 2880,
-  'kaspa': 144000,
-};
-
-// Pool counts (you can update these with real data)
-const ACTIVE_POOLS = {
-  'bitcoin': 42,
-  'ethereum-classic': 25,
-  'dogecoin': 18,
-  'litecoin': 28,
-  'monero': 15,
-  'ravencoin': 20,
-  'ergo': 12,
-  'flux': 10,
-  'bitcoin-gold': 8,
-  'kaspa': 15,
+// Mining algorithms and hardware for popular coins
+const COIN_METADATA = {
+  'bitcoin': { algorithm: 'SHA-256', hardware: 'ASIC', dailyEmissions: 900 },
+  'ethereum-classic': { algorithm: 'ETHash', hardware: 'ASIC', dailyEmissions: 14400 },
+  'monero': { algorithm: 'RandomX', hardware: 'CPU', dailyEmissions: 720 },
+  'litecoin': { algorithm: 'Scrypt', hardware: 'ASIC', dailyEmissions: 14400 },
+  'dogecoin': { algorithm: 'Scrypt', hardware: 'ASIC', dailyEmissions: 14400000 },
+  'ravencoin': { algorithm: 'KAWPOW', hardware: 'GPU', dailyEmissions: 7200 },
+  'ergo': { algorithm: 'Autolykos v2', hardware: 'GPU', dailyEmissions: 4320 },
+  'bitcoin-gold': { algorithm: 'Zhash', hardware: 'ASIC', dailyEmissions: 900 },
+  'vertcoin': { algorithm: 'Verthash', hardware: 'GPU', dailyEmissions: 14400 },
+  'grin': { algorithm: 'C31', hardware: 'GPU', dailyEmissions: 60 },
+  'zencash': { algorithm: 'Equihash', hardware: 'GPU', dailyEmissions: 1440 }
 };
 
 export async function fetchCoinData() {
   try {
-    // Get top 100 coins by market cap
+    // Fetch top 50 coins by market cap
     const response = await fetch(
-      `${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&sparkline=false`
+      `${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&sparkline=false`
     );
     
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Failed to fetch coin data');
     }
 
     const data = await response.json();
     
-    // Filter only POW coins we know about and format data
-    const powCoins = data
-      .filter(coin => COIN_ALGORITHMS[coin.id])
-      .map(coin => {
-        const dailyCoins = DAILY_COINS[coin.id] || 0;
+    // Filter and transform the data
+    const mineableCoins = data
+      .filter(coin => COIN_METADATA[coin.id]) // Only include coins we have mining data for
+      .map((coin, index) => {
+        const metadata = COIN_METADATA[coin.id];
+        const dailyEmissionsValue = metadata.dailyEmissions * coin.current_price;
+        
         return {
-          rank: coin.market_cap_rank,
-          id: coin.id,
+          rank: index + 1,
           name: coin.name,
           symbol: coin.symbol.toUpperCase(),
           price: coin.current_price,
           marketCap: coin.market_cap,
-          algorithm: COIN_ALGORITHMS[coin.id],
-          hardware: COIN_HARDWARE[coin.id],
-          dailyCoins: dailyCoins,
-          dailyEmissionsValue: dailyCoins * coin.current_price,
-          image: coin.image,
+          volume24h: coin.total_volume,
           priceChange24h: coin.price_change_percentage_24h,
-          activePools: ACTIVE_POOLS[coin.id] || 0,
+          algorithm: metadata.algorithm,
+          dailyCoins: metadata.dailyEmissions,
+          dailyEmissionsValue: dailyEmissionsValue,
+          hardware: metadata.hardware,
+          activePools: getActivePools(coin.symbol), // This would come from a mining pool API in production
+          image: coin.image
         };
       });
 
-    // Calculate emissions percentages
-    const totalEmissions = powCoins.reduce((sum, coin) => sum + coin.dailyEmissionsValue, 0);
-    const btcEmissions = powCoins.find(coin => coin.symbol === 'BTC')?.dailyEmissionsValue || 0;
-    const totalExBTC = totalEmissions - btcEmissions;
-
-    return powCoins.map(coin => ({
-      ...coin,
-      emissionsPercentage: ((coin.dailyEmissionsValue / totalEmissions) * 100).toFixed(2),
-      emissionsExBTC: coin.symbol === 'BTC' ? 0 : ((coin.dailyEmissionsValue / totalExBTC) * 100).toFixed(2)
-    }));
-
+    return mineableCoins;
   } catch (error) {
     console.error('Error fetching coin data:', error);
     return [];
   }
+}
+
+// Simulated function for active pools (in production, this would fetch from a mining pool API)
+function getActivePools(symbol) {
+  const poolCounts = {
+    BTC: 42,
+    ETH: 35,
+    XMR: 15,
+    LTC: 28,
+    DOGE: 25,
+    RVN: 18,
+    ERG: 12,
+    BTG: 10,
+    VTC: 8,
+    GRIN: 6,
+    ZEN: 15
+  };
+  return poolCounts[symbol.toUpperCase()] || Math.floor(Math.random() * 20) + 5;
 }
