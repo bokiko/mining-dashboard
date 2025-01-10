@@ -1,59 +1,56 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from "./ui/card";  // Fixed import path
-import { ArrowUpDown, Cpu, HardDrive, MonitorSmartphone } from 'lucide-react';
+import { Card, CardContent } from "./ui/card";
+import { ArrowUpDown, Cpu, HardDrive, MonitorSmartphone, Search, ArrowUp, ArrowDown, X } from 'lucide-react';
+import { fetchCoinData } from '../lib/api';
 
-// Temporary data fetching function
-const fetchCoinData = async () => {
-  // Sample data for demonstration
-  return [
-    {
-      rank: 1,
-      name: "Bitcoin",
-      symbol: "BTC",
-      price: 65432.10,
-      marketCap: 1200000000000,
-      algorithm: "SHA-256",
-      dailyCoins: 900,
-      dailyEmissions: "11.25 BTC",
-      emissionsValue: 736111.125,
-      emissionsPercentage: 45.2,
-      emissionsExBTC: 0,
-      activePools: 42,
-      hardware: "ASIC",
-    },
-    {
-      rank: 2,
-      name: "Ethereum Classic",
-      symbol: "ETC",
-      price: 25.78,
-      marketCap: 3000000000,
-      algorithm: "Ethash",
-      dailyCoins: 1440,
-      dailyEmissions: "2.88 ETC",
-      emissionsValue: 74.2464,
-      emissionsPercentage: 8.5,
-      emissionsExBTC: 15.5,
-      activePools: 22,
-      hardware: "GPU",
-    },
-    {
-      rank: 3,
-      name: "Monero",
-      symbol: "XMR",
-      price: 156.78,
-      marketCap: 2800000000,
-      algorithm: "RandomX",
-      dailyCoins: 720,
-      dailyEmissions: "0.6 XMR",
-      emissionsValue: 94.068,
-      emissionsPercentage: 5.2,
-      emissionsExBTC: 9.5,
-      activePools: 15,
-      hardware: "CPU",
-    }
-  ];
+const CoinDetailModal = ({ coin, onClose }) => {
+  if (!coin) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-[#00008B]">{coin.name} Details</h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X size={24} />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold mb-2">Market Information</h3>
+              <p>Price: ${coin.price?.toLocaleString()}</p>
+              <p>Market Cap: ${(coin.marketCap / 1e9).toFixed(2)}B</p>
+              <p>24h Volume: ${(coin.volume24h / 1e6).toFixed(2)}M</p>
+              <p className={`flex items-center ${coin.priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                24h Change: {coin.priceChange24h?.toFixed(2)}%
+                {coin.priceChange24h >= 0 ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold mb-2">Mining Information</h3>
+              <p>Algorithm: {coin.algorithm}</p>
+              <p>Hardware: {coin.hardware}</p>
+              <p>Daily Emissions: {coin.dailyCoins?.toLocaleString()} {coin.symbol}</p>
+              <p>Active Mining Pools: {coin.activePools}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Mining Profitability</h3>
+            <p>Daily Emissions Value: ${(coin.dailyEmissionsValue)?.toLocaleString()}</p>
+            <div className="mt-2 text-sm text-gray-600">
+              <p>Note: Actual mining rewards may vary based on network hashrate, difficulty, and your mining setup.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const CryptoTable = () => {
@@ -61,6 +58,8 @@ const CryptoTable = () => {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [sortConfig, setSortConfig] = useState({ key: 'rank', direction: 'asc' });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCoin, setSelectedCoin] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -99,21 +98,27 @@ const CryptoTable = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedCoins = [...coins].sort((a, b) => {
-    if (sortConfig.direction === 'asc') {
-      return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
-    }
-    return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
-  });
-
-  const filteredCoins = activeFilter === 'all' 
-    ? sortedCoins 
-    : sortedCoins.filter(coin => coin.hardware.toLowerCase() === activeFilter.toLowerCase());
+  // Filter coins based on search term and hardware filter
+  const filteredCoins = coins
+    .filter(coin => {
+      const matchesSearch = searchTerm === '' || 
+        coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = activeFilter === 'all' || 
+        coin.hardware.toLowerCase() === activeFilter.toLowerCase();
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      if (sortConfig.direction === 'asc') {
+        return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+      }
+      return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
+    });
 
   const calculateTotals = () => {
     if (filteredCoins.length === 0) return null;
     return {
-      dailyEmissionsValue: filteredCoins.reduce((sum, coin) => sum + (coin.dailyCoins * coin.price), 0),
+      dailyEmissionsValue: filteredCoins.reduce((sum, coin) => sum + coin.dailyEmissionsValue, 0),
       coins: filteredCoins.length
     };
   };
@@ -124,33 +129,47 @@ const CryptoTable = () => {
     <div className="min-h-screen bg-white p-4">
       <Card className="w-full border-[#00008B]/20">
         <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <h1 className="text-2xl font-bold text-[#00008B]">Mining Coins Dashboard</h1>
-            <div className="flex gap-2">
-              <button 
-                onClick={() => setActiveFilter('all')}
-                className={`px-4 py-2 rounded ${activeFilter === 'all' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
-              >
-                All
-              </button>
-              <button 
-                onClick={() => setActiveFilter('asic')}
-                className={`px-4 py-2 rounded ${activeFilter === 'asic' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
-              >
-                ASIC
-              </button>
-              <button 
-                onClick={() => setActiveFilter('gpu')}
-                className={`px-4 py-2 rounded ${activeFilter === 'gpu' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
-              >
-                GPU
-              </button>
-              <button 
-                onClick={() => setActiveFilter('cpu')}
-                className={`px-4 py-2 rounded ${activeFilter === 'cpu' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
-              >
-                CPU
-              </button>
+            
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search coins..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00008B]/50 w-full sm:w-64"
+                />
+              </div>
+              
+              <div className="flex gap-2 flex-wrap">
+                <button 
+                  onClick={() => setActiveFilter('all')}
+                  className={`px-4 py-2 rounded ${activeFilter === 'all' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
+                >
+                  All
+                </button>
+                <button 
+                  onClick={() => setActiveFilter('asic')}
+                  className={`px-4 py-2 rounded ${activeFilter === 'asic' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
+                >
+                  ASIC
+                </button>
+                <button 
+                  onClick={() => setActiveFilter('gpu')}
+                  className={`px-4 py-2 rounded ${activeFilter === 'gpu' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
+                >
+                  GPU
+                </button>
+                <button 
+                  onClick={() => setActiveFilter('cpu')}
+                  className={`px-4 py-2 rounded ${activeFilter === 'cpu' ? 'bg-[#00008B] text-white' : 'bg-gray-100 text-[#00008B]'}`}
+                >
+                  CPU
+                </button>
+              </div>
             </div>
           </div>
 
@@ -174,10 +193,10 @@ const CryptoTable = () => {
                       { key: 'name', label: 'Name' },
                       { key: 'symbol', label: 'Symbol' },
                       { key: 'price', label: 'Price' },
+                      { key: 'priceChange24h', label: '24h Change' },
                       { key: 'marketCap', label: 'Market Cap' },
                       { key: 'algorithm', label: 'Algorithm' },
                       { key: 'dailyCoins', label: 'Daily Generated' },
-                      { key: 'activePools', label: 'Active Pools' },
                       { key: 'hardware', label: 'Hardware' }
                     ].map((column) => (
                       <th 
@@ -195,15 +214,22 @@ const CryptoTable = () => {
                 </thead>
                 <tbody className="divide-y divide-[#00008B]/10">
                   {filteredCoins.map((coin) => (
-                    <tr key={coin.symbol} className="hover:bg-[#00008B]/5">
+                    <tr 
+                      key={coin.symbol} 
+                      className="hover:bg-[#00008B]/5 cursor-pointer"
+                      onClick={() => setSelectedCoin(coin)}
+                    >
                       <td className="px-4 py-3 text-sm">{coin.rank}</td>
                       <td className="px-4 py-3 text-sm font-medium">{coin.name}</td>
                       <td className="px-4 py-3 text-sm">{coin.symbol}</td>
                       <td className="px-4 py-3 text-sm">${coin.price?.toLocaleString()}</td>
+                      <td className={`px-4 py-3 text-sm flex items-center ${coin.priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {coin.priceChange24h?.toFixed(2)}%
+                        {coin.priceChange24h >= 0 ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+                      </td>
                       <td className="px-4 py-3 text-sm">${(coin.marketCap / 1e9).toFixed(2)}B</td>
                       <td className="px-4 py-3 text-sm">{coin.algorithm}</td>
                       <td className="px-4 py-3 text-sm">{coin.dailyCoins?.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-sm">{coin.activePools}</td>
                       <td className="px-4 py-3 text-sm">
                         {getHardwareIcon(coin.hardware)}
                         {coin.hardware}
@@ -216,6 +242,13 @@ const CryptoTable = () => {
           )}
         </CardContent>
       </Card>
+
+      {selectedCoin && (
+        <CoinDetailModal
+          coin={selectedCoin}
+          onClose={() => setSelectedCoin(null)}
+        />
+      )}
     </div>
   );
 };
