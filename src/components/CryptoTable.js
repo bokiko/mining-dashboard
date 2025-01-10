@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import { ArrowUpDown, Cpu, HardDrive, MonitorSmartphone } from 'lucide-react';
-import { fetchCoinData } from '../lib/api';
+import { fetchCoinData } from '../lib/api.js';
 
 const CryptoTable = () => {
   const [coins, setCoins] = useState([]);
