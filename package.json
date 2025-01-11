@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:css": "postcss src/app/globals.css -o static/css/styles.css",
+    "watch:css": "postcss src/app/globals.css -o static/css/styles.css --watch"
   },
   "dependencies": {
     "react": "^18",
@@ -22,8 +24,4 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.0"
   }
-}
-"scripts": {
-  "build:css": "postcss src/app/globals.css -o static/css/styles.css",
-  "watch:css": "postcss src/app/globals.css -o static/css/styles.css --watch"
 }
