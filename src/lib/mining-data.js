@@ -1,5 +1,285 @@
 'use client';
 
+// Exchange symbol mappings
+const EXCHANGE_SYMBOLS = {
+  'BTC': { 
+    coingecko: 'bitcoin',
+    mexc: 'BTCUSDT',
+    kucoin: 'BTC-USDT',
+    gate: 'BTC_USDT'
+  },
+  'DOGE': { 
+    coingecko: 'dogecoin',
+    mexc: 'DOGEUSDT',
+    kucoin: 'DOGE-USDT',
+    gate: 'DOGE_USDT'
+  },
+  'BCH': { 
+    coingecko: 'bitcoin-cash',
+    mexc: 'BCHUSDT',
+    kucoin: 'BCH-USDT',
+    gate: 'BCH_USDT'
+  },
+  'LTC': { 
+    coingecko: 'litecoin',
+    mexc: 'LTCUSDT',
+    kucoin: 'LTC-USDT',
+    gate: 'LTC_USDT'
+  },
+  'ETC': { 
+    coingecko: 'ethereum-classic',
+    mexc: 'ETCUSDT',
+    kucoin: 'ETC-USDT',
+    gate: 'ETC_USDT'
+  },
+  'XMR': { 
+    coingecko: 'monero',
+    mexc: 'XMRUSDT',
+    kucoin: 'XMR-USDT',
+    gate: 'XMR_USDT'
+  },
+  'KAS': { 
+    coingecko: 'kaspa',
+    mexc: 'KASUSDT',
+    kucoin: 'KAS-USDT',
+    gate: 'KAS_USDT'
+  },
+  'BSV': { 
+    coingecko: 'bitcoin-sv',
+    mexc: 'BSVUSDT',
+    gate: 'BSV_USDT'
+  },
+  'CFX': { 
+    coingecko: 'conflux',
+    mexc: 'CFXUSDT',
+    gate: 'CFX_USDT'
+  },
+  'CKB': { 
+    coingecko: 'nervos-network',
+    mexc: 'CKBUSDT',
+    gate: 'CKB_USDT'
+  },
+  'DASH': { 
+    coingecko: 'dash',
+    mexc: 'DASHUSDT',
+    kucoin: 'DASH-USDT',
+    gate: 'DASH_USDT'
+  },
+  'VRSC': { 
+    coingecko: 'verus-coin'
+  },
+  'ZEN': { 
+    coingecko: 'horizen',
+    mexc: 'ZENUSDT',
+    kucoin: 'ZEN-USDT',
+    gate: 'ZEN_USDT'
+  },
+  'SC': { 
+    coingecko: 'siacoin',
+    mexc: 'SCUSDT',
+    gate: 'SC_USDT'
+  },
+  'XCH': { 
+    coingecko: 'chia',
+    mexc: 'XCHUSDT',
+    gate: 'XCH_USDT'
+  },
+  'RVN': { 
+    coingecko: 'ravencoin',
+    mexc: 'RVNUSDT',
+    kucoin: 'RVN-USDT',
+    gate: 'RVN_USDT'
+  },
+  'KDA': { 
+    coingecko: 'kadena',
+    mexc: 'KDAUSDT',
+    kucoin: 'KDA-USDT',
+    gate: 'KDA_USDT'
+  },
+  'ZANO': { 
+    coingecko: 'zano',
+    mexc: 'ZANOUSDT'
+  },
+  'FLUX': { 
+    coingecko: 'flux',
+    mexc: 'FLUXUSDT',
+    kucoin: 'FLUX-USDT',
+    gate: 'FLUX_USDT'
+  },
+  'BTG': { 
+    coingecko: 'bitcoin-gold',
+    mexc: 'BTGUSDT',
+    gate: 'BTG_USDT'
+  },
+  'CLORE': { 
+    coingecko: 'clore',
+    mexc: 'CLOREUSDT'
+  },
+  'OCTA': { 
+    coingecko: 'octaspace',
+    mexc: 'OCTAUSDT'
+  },
+  'FIRO': { 
+    coingecko: 'firo',
+    mexc: 'FIROUSDT',
+    gate: 'FIRO_USDT'
+  },
+  'DNX': { 
+    coingecko: 'dynex',
+    mexc: 'DNXUSDT'
+  },
+  'IRON': { 
+    coingecko: 'iron-fish',
+    mexc: 'IRONUSDT'
+  },
+  'NEXA': {  // Changed from NEX to NEXA to match your COIN_METADATA
+    coingecko: 'nexa',
+    mexc: 'NEXAUSDT'
+  },
+  'AE': { 
+    coingecko: 'aeternity',
+    mexc: 'AEUSDT',
+    gate: 'AE_USDT'
+  },
+  'XEL': { 
+    coingecko: 'xelis',
+    mexc: 'XELUSDT'
+  },
+  'XNA': { 
+    coingecko: 'neurai',
+    mexc: 'XNAUSDT'
+  },
+  'DERO': { 
+    coingecko: 'dero',
+    kucoin: 'DERO-USDT'
+  },
+  'RXD': { 
+    coingecko: 'radiant',
+    mexc: 'RXDUSDT'
+  },
+  'ZEPH': { 
+    coingecko: 'zephyr',
+    mexc: 'ZEPHUSDT'
+  },
+  'NEOX': { 
+    coingecko: 'neoxa',
+    mexc: 'NEOXUSDT'
+  },
+  'BLOCX': { 
+    coingecko: 'blocx',
+    mexc: 'BLOCXUSDT'
+  },
+  'RTM': { 
+    coingecko: 'raptoreum',
+    mexc: 'RTMUSDT'
+  },
+  'KLS': { 
+    coingecko: 'karlsen',
+    mexc: 'KLSUSDT'
+  }
+};
+
+// API Fetching Functions
+async function fetchCoinGeckoPrice(symbol) {
+  try {
+    const geckoId = EXCHANGE_SYMBOLS[symbol]?.coingecko;
+    if (!geckoId) return 0;
+
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${geckoId}&vs_currencies=usd`
+    );
+    const data = await response.json();
+    return data[geckoId]?.usd || 0;
+  } catch (error) {
+    console.error(`CoinGecko API error for ${symbol}:`, error);
+    return 0;
+  }
+}
+
+async function fetchMEXCPrice(symbol) {
+  try {
+    const mexcSymbol = EXCHANGE_SYMBOLS[symbol]?.mexc;
+    if (!mexcSymbol) return 0;
+
+    const response = await fetch(
+      `https://api.mexc.com/api/v3/ticker/price?symbol=${mexcSymbol}`
+    );
+    const data = await response.json();
+    return parseFloat(data.price) || 0;
+  } catch (error) {
+    console.error(`MEXC API error for ${symbol}:`, error);
+    return 0;
+  }
+}
+
+async function fetchKuCoinPrice(symbol) {
+  try {
+    const kucoinSymbol = EXCHANGE_SYMBOLS[symbol]?.kucoin;
+    if (!kucoinSymbol) return 0;
+
+    const response = await fetch(
+      `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${kucoinSymbol}`
+    );
+    const data = await response.json();
+    return parseFloat(data.data?.price) || 0;
+  } catch (error) {
+    console.error(`KuCoin API error for ${symbol}:`, error);
+    return 0;
+  }
+}
+
+async function fetchGatePrice(symbol) {
+  try {
+    const gateSymbol = EXCHANGE_SYMBOLS[symbol]?.gate;
+    if (!gateSymbol) return 0;
+
+    const response = await fetch(
+      `https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSymbol}`
+    );
+    const data = await response.json();
+    return parseFloat(data[0]?.last) || 0;
+  } catch (error) {
+    console.error(`Gate.io API error for ${symbol}:`, error);
+    return 0;
+  }
+}
+
+// Price fetching with fallback
+async function fetchPriceWithFallback(symbol) {
+  let price = 0;
+  let source = '';
+
+  // Try CoinGecko first
+  price = await fetchCoinGeckoPrice(symbol);
+  if (price > 0) {
+    source = 'CoinGecko';
+    return { price, source };
+  }
+
+  // Try MEXC
+  price = await fetchMEXCPrice(symbol);
+  if (price > 0) {
+    source = 'MEXC';
+    return { price, source };
+  }
+
+  // Try KuCoin
+  price = await fetchKuCoinPrice(symbol);
+  if (price > 0) {
+    source = 'KuCoin';
+    return { price, source };
+  }
+
+  // Try Gate.io
+  price = await fetchGatePrice(symbol);
+  if (price > 0) {
+    source = 'Gate.io';
+    return { price, source };
+  }
+
+  // If all APIs fail
+  return { price: 0, source: 'No Data Available' };
+}
 // Helper function to convert hashrate string to number
 export const parseHashrate = (hashrateStr) => {
   const units = {
@@ -383,61 +663,23 @@ export const COIN_METADATA = {
     coinsMinedDay: 3037719.916
   }
 };
-
-// Function to fetch coin data with prices
+// Updated fetchCoinData function with multi-API support
 export async function fetchCoinData() {
   try {
-    // Fetch prices from CoinGecko API
-    const response = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,dogecoin,bitcoin-cash,litecoin,ethereum-classic,monero,kaspa,bitcoin-sv,conflux,nervos-network,dash,verus-coin,horizen,siacoin,chia,ravencoin,kadena,zano,flux,bitcoin-gold,clore,octaspace,firo,dynex,iron-fish,nexa,aeternity,xelis,neurai,dero,radiant,zephyr,neoxa,blocx,raptoreum,karlsen&vs_currencies=usd'
-    );
-    const priceData = await response.json();
+    // Fetch prices for all coins using the fallback system
+    const pricePromises = Object.keys(COIN_METADATA).map(async (symbol) => {
+      const { price, source } = await fetchPriceWithFallback(symbol);
+      return { symbol, price, source };
+    });
 
-    // Map CoinGecko IDs to our symbols
-    const coinGeckoIds = {
-      'BTC': 'bitcoin',
-      'DOGE': 'dogecoin',
-      'BCH': 'bitcoin-cash',
-      'LTC': 'litecoin',
-      'ETC': 'ethereum-classic',
-      'XMR': 'monero',
-      'KAS': 'kaspa',
-      'BSV': 'bitcoin-sv',
-      'CFX': 'conflux',
-      'CKB': 'nervos-network',
-      'DASH': 'dash',
-      'VRSC': 'verus-coin',
-      'ZEN': 'horizen',
-      'SC': 'siacoin',
-      'XCH': 'chia',
-      'RVN': 'ravencoin',
-      'KDA': 'kadena',
-      'ZANO': 'zano',
-      'FLUX': 'flux',
-      'BTG': 'bitcoin-gold',
-      'CLORE': 'clore',
-      'OCTA': 'octaspace',
-      'FIRO': 'firo',
-      'DNX': 'dynex',
-      'IRON': 'iron-fish',
-      'NEX': 'nexa',
-      'AE': 'aeternity',
-      'XEL': 'xelis',
-      'XNA': 'neurai',
-      'DERO': 'dero',
-      'RXD': 'radiant',
-      'ZEPH': 'zephyr',
-      'NEOX': 'neoxa',
-      'BLOCX': 'blocx',
-      'RTM': 'raptoreum',
-      'KLS': 'karlsen'
-    };
+    // Wait for all price fetches to complete
+    const prices = await Promise.all(pricePromises);
+    console.log('Fetched prices:', prices); // Debug log
 
     // Transform the metadata into the format needed for the UI
     const coins = Object.entries(COIN_METADATA).map(([symbol, data]) => {
-      const geckoId = coinGeckoIds[symbol];
-      const price = geckoId ? priceData[geckoId]?.usd || 0 : 0;
-      const dailyEmissionUSD = data.coinsMinedDay * price;
+      const priceInfo = prices.find(p => p.symbol === symbol) || { price: 0, source: 'No Data' };
+      const dailyEmissionUSD = data.coinsMinedDay * priceInfo.price;
 
       return {
         symbol,
@@ -450,15 +692,19 @@ export async function fetchCoinData() {
         blockTime: data.blockTime,
         blocksDay: data.blocksDay,
         coinsMinedDay: data.coinsMinedDay,
-        price: price,
+        price: priceInfo.price,
+        priceSource: priceInfo.source,
         dailyEmissionUSD: dailyEmissionUSD
       };
     });
 
+    // Log the final processed data for debugging
+    console.log('Processed data:', coins.length, 'coins');
     return coins;
+
   } catch (error) {
-    console.error('Error fetching price data:', error);
-    // Return data without prices in case of API error
+    console.error('Error in fetchCoinData:', error);
+    // Return basic data without prices if all APIs fail
     return Object.entries(COIN_METADATA).map(([symbol, data]) => ({
       symbol,
       name: data.name,
@@ -471,6 +717,7 @@ export async function fetchCoinData() {
       blocksDay: data.blocksDay,
       coinsMinedDay: data.coinsMinedDay,
       price: 0,
+      priceSource: 'Error',
       dailyEmissionUSD: 0
     }));
   }
