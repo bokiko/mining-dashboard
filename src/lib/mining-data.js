@@ -283,7 +283,7 @@ export const COIN_METADATA = {
     blocksDay: 1440,
     coinsMinedDay: 28800
   },
-  'NEX': {
+  'NEXA': {
     name: 'Nexa',
     algorithm: 'NexaPoW',
     networkHashrate: parseHashrate('5.38 TH/s'),
