@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "./ui/card";
 import { ArrowUpDown, Cpu, HardDrive, MonitorSmartphone, Search, AlertCircle } from 'lucide-react';
-import { fetchCoinData } from '../lib/mining-data';
+import { fetchCoinData } from '../lib/mining-data';  // Make sure this path is correct
 
 const CryptoTable = () => {
   const [coins, setCoins] = useState([]);
@@ -13,28 +13,29 @@ const CryptoTable = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'dailyEmissionUSD', direction: 'desc' });
   const [searchTerm, setSearchTerm] = useState('');
 
-  const loadData = async () => {
-    try {
-      const data = await fetchCoinData();
-      setCoins(data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch coin data. Will retry...');
-      console.error('Error loading data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchCoinData();
+        console.log('Fetched coins:', data); // Debug log
+        setCoins(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading data:', err);
+        setError('Failed to fetch coin data. Retrying...');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadData();
-    // Refresh data every 5 minutes
-    const interval = setInterval(loadData, 300000);
+    const interval = setInterval(loadData, 300000); // Refresh every 5 minutes
     return () => clearInterval(interval);
   }, []);
 
   const getHardwareIcon = (type) => {
-    switch (type.toLowerCase()) {
+    switch (type?.toLowerCase()) {
       case 'asic':
         return <Cpu className="inline-block mr-1" />;
       case 'gpu':
@@ -55,17 +56,20 @@ const CryptoTable = () => {
 
   const filteredAndSortedCoins = coins
     .filter(coin => {
-      const matchesSearch = searchTerm === '' ||
+      const matchesSearch = searchTerm === '' || 
         coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
         coin.algorithm.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter = activeFilter === 'all' ||
+      
+      const matchesHardware = activeFilter === 'all' || 
         coin.hardware.toLowerCase().includes(activeFilter.toLowerCase());
-      return matchesSearch && matchesFilter;
+      
+      return matchesSearch && matchesHardware;
     })
     .sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+      const aValue = a[sortConfig.key] ?? 0;
+      const bValue = b[sortConfig.key] ?? 0;
+      
       if (sortConfig.direction === 'asc') {
         return aValue > bValue ? 1 : -1;
       }
@@ -76,7 +80,7 @@ const CryptoTable = () => {
     if (filteredAndSortedCoins.length === 0) return null;
     return {
       coins: filteredAndSortedCoins.length,
-      totalDailyEmission: filteredAndSortedCoins.reduce((sum, coin) => sum + coin.dailyEmissionUSD, 0)
+      totalDailyEmission: filteredAndSortedCoins.reduce((sum, coin) => sum + (coin.dailyEmissionUSD || 0), 0)
     };
   };
 
