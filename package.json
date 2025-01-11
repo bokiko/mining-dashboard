@@ -23,3 +23,7 @@
     "eslint-config-next": "14.1.0"
   }
 }
+"scripts": {
+  "build:css": "postcss src/app/globals.css -o static/css/styles.css",
+  "watch:css": "postcss src/app/globals.css -o static/css/styles.css --watch"
+}
