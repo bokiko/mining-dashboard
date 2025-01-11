@@ -30,7 +30,7 @@ export const ALGO_METADATA = {
   'Scrypt': { hardware: 'ASIC', defaultUnit: 'GH/s' },
   'Etchash': { hardware: 'GPU', defaultUnit: 'MH/s' },
   'RandomX': { hardware: 'CPU', defaultUnit: 'KH/s' },
-  'KHeavyHash': { hardware: 'GPU/ASIC', defaultUnit: 'GH/s' },
+  'KHeavyHash': { hardware: 'ASIC', defaultUnit: 'GH/s' },
   'Octopus': { hardware: 'GPU', defaultUnit: 'MH/s' },
   'Eaglesong': { hardware: 'ASIC', defaultUnit: 'TH/s' },
   'X11': { hardware: 'ASIC', defaultUnit: 'GH/s' },
@@ -56,7 +56,7 @@ export const ALGO_METADATA = {
   'GhostRider': { hardware: 'CPU', defaultUnit: 'KH/s' },
   'KarlsenHash': { hardware: 'GPU', defaultUnit: 'MH/s' }
 };
-
+// Coin metadata
 export const COIN_METADATA = {
   'BTC': {
     name: 'Bitcoin',
@@ -65,8 +65,7 @@ export const COIN_METADATA = {
     blockReward: 3.125,
     blockTime: 600,
     blocksDay: 144,
-    coinsMinedDay: 450,
-    dailyEmission: 42028200
+    coinsMinedDay: 450
   },
   'DOGE': {
     name: 'Dogecoin',
@@ -75,8 +74,7 @@ export const COIN_METADATA = {
     blockReward: 10000,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 14400000,
-    dailyEmission: 4692254
+    coinsMinedDay: 14400000
   },
   'BCH': {
     name: 'Bitcoin Cash',
@@ -85,8 +83,7 @@ export const COIN_METADATA = {
     blockReward: 3.12647923,
     blockTime: 600,
     blocksDay: 144,
-    coinsMinedDay: 450.213,
-    dailyEmission: 197450
+    coinsMinedDay: 450.213
   },
   'LTC': {
     name: 'Litecoin',
@@ -95,8 +92,7 @@ export const COIN_METADATA = {
     blockReward: 6.25,
     blockTime: 150,
     blocksDay: 576,
-    coinsMinedDay: 3600,
-    dailyEmission: 375948
+    coinsMinedDay: 3600
   },
   'ETC': {
     name: 'Ethereum Classic',
@@ -105,8 +101,7 @@ export const COIN_METADATA = {
     blockReward: 2.56,
     blockTime: 13,
     blocksDay: 6646,
-    coinsMinedDay: 17013.76,
-    dailyEmission: 428406
+    coinsMinedDay: 17013.76
   },
   'XMR': {
     name: 'Monero',
@@ -115,8 +110,7 @@ export const COIN_METADATA = {
     blockReward: 0.6062231,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 436.481,
-    dailyEmission: 85817
+    coinsMinedDay: 436.481
   },
   'KAS': {
     name: 'Kaspa',
@@ -125,8 +119,7 @@ export const COIN_METADATA = {
     blockReward: 69.29565774,
     blockTime: 1,
     blocksDay: 86400,
-    coinsMinedDay: 5987144.829,
-    dailyEmission: 675829
+    coinsMinedDay: 5987144.829
   },
   'BSV': {
     name: 'Bitcoin SV',
@@ -135,8 +128,7 @@ export const COIN_METADATA = {
     blockReward: 3.13306905,
     blockTime: 600,
     blocksDay: 144,
-    coinsMinedDay: 451.162,
-    dailyEmission: 26068
+    coinsMinedDay: 451.162
   },
   'CFX': {
     name: 'Conflux',
@@ -145,8 +137,7 @@ export const COIN_METADATA = {
     blockReward: 1.0056307766,
     blockTime: 0.5,
     blocksDay: 172800,
-    coinsMinedDay: 173772.998,
-    dailyEmission: 25323
+    coinsMinedDay: 173772.998
   },
   'CKB': {
     name: 'Nervos Network',
@@ -155,8 +146,7 @@ export const COIN_METADATA = {
     blockReward: 891.17482303,
     blockTime: 10,
     blocksDay: 8640,
-    coinsMinedDay: 7699750.471,
-    dailyEmission: 84334
+    coinsMinedDay: 7699750.471
   },
   'DASH': {
     name: 'Dash',
@@ -165,8 +155,7 @@ export const COIN_METADATA = {
     blockReward: 1.07234785,
     blockTime: 150,
     blocksDay: 576,
-    coinsMinedDay: 617.672,
-    dailyEmission: 22421
+    coinsMinedDay: 617.672
   },
   'VRSC': {
     name: 'VerusCoin',
@@ -175,8 +164,7 @@ export const COIN_METADATA = {
     blockReward: 3,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 4320,
-    dailyEmission: 20822
+    coinsMinedDay: 4320
   },
   'ZEN': {
     name: 'Horizen',
@@ -185,8 +173,7 @@ export const COIN_METADATA = {
     blockReward: 1.875,
     blockTime: 150,
     blocksDay: 576,
-    coinsMinedDay: 1080,
-    dailyEmission: 25801
+    coinsMinedDay: 1080
   },
   'SC': {
     name: 'Siacoin',
@@ -195,19 +182,16 @@ export const COIN_METADATA = {
     blockReward: 30000,
     blockTime: 600,
     blocksDay: 144,
-    coinsMinedDay: 8640000,
-    dailyEmission: 53782
-  }
-  
- 'XCH': {
+    coinsMinedDay: 8640000
+  },
+  'XCH': {
     name: 'Chia',
     algorithm: 'Proof of Space',
     networkHashrate: parseHashrate('18.19 EiB'),
     blockReward: 1,
     blockTime: 17,
     blocksDay: 5082,
-    coinsMinedDay: 5082,
-    dailyEmission: 110432
+    coinsMinedDay: 5082
   },
   'RVN': {
     name: 'Ravencoin',
@@ -216,8 +200,7 @@ export const COIN_METADATA = {
     blockReward: 2500,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 3600000,
-    dailyEmission: 69988
+    coinsMinedDay: 3600000
   },
   'KDA': {
     name: 'Kadena',
@@ -226,8 +209,7 @@ export const COIN_METADATA = {
     blockReward: 0.9661385,
     blockTime: 1.5,
     blocksDay: 57600,
-    coinsMinedDay: 55649.578,
-    dailyEmission: 45519
+    coinsMinedDay: 55649.578
   },
   'ZANO': {
     name: 'Zano',
@@ -236,8 +218,7 @@ export const COIN_METADATA = {
     blockReward: 1,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 1440,
-    dailyEmission: 22738
+    coinsMinedDay: 1440
   },
   'FLUX': {
     name: 'Flux',
@@ -246,8 +227,7 @@ export const COIN_METADATA = {
     blockReward: 18.75,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 13500,
-    dailyEmission: 7783
+    coinsMinedDay: 13500
   },
   'BTG': {
     name: 'Bitcoin Gold',
@@ -256,8 +236,7 @@ export const COIN_METADATA = {
     blockReward: 3.125,
     blockTime: 600,
     blocksDay: 144,
-    coinsMinedDay: 450,
-    dailyEmission: 5567
+    coinsMinedDay: 450
   },
   'CLORE': {
     name: 'Clore',
@@ -266,8 +245,7 @@ export const COIN_METADATA = {
     blockReward: 205,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 295200,
-    dailyEmission: 22813
+    coinsMinedDay: 295200
   },
   'OCTA': {
     name: 'OctaSpace',
@@ -276,8 +254,7 @@ export const COIN_METADATA = {
     blockReward: 1.2,
     blockTime: 15,
     blocksDay: 5760,
-    coinsMinedDay: 6912,
-    dailyEmission: 6947
+    coinsMinedDay: 6912
   },
   'FIRO': {
     name: 'Firo',
@@ -286,8 +263,7 @@ export const COIN_METADATA = {
     blockReward: 0.3125,
     blockTime: 300,
     blocksDay: 288,
-    coinsMinedDay: 90,
-    dailyEmission: 183
+    coinsMinedDay: 90
   },
   'DNX': {
     name: 'Dynex',
@@ -296,8 +272,7 @@ export const COIN_METADATA = {
     blockReward: 40.482669901,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 29147.522,
-    dailyEmission: 5841
+    coinsMinedDay: 29147.522
   },
   'IRON': {
     name: 'Iron Fish',
@@ -306,18 +281,16 @@ export const COIN_METADATA = {
     blockReward: 20,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 28800,
-    dailyEmission: 10385
-  }
-'NEX': {
+    coinsMinedDay: 28800
+  },
+  'NEX': {
     name: 'Nexa',
     algorithm: 'NexaPoW',
     networkHashrate: parseHashrate('5.38 TH/s'),
     blockReward: 10000000,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 7200000000,
-    dailyEmission: 13968
+    coinsMinedDay: 7200000000
   },
   'AE': {
     name: 'Aeternity',
@@ -326,8 +299,7 @@ export const COIN_METADATA = {
     blockReward: 43.65,
     blockTime: 180,
     blocksDay: 480,
-    coinsMinedDay: 20952,
-    dailyEmission: 654
+    coinsMinedDay: 20952
   },
   'XEL': {
     name: 'Xelis',
@@ -336,8 +308,7 @@ export const COIN_METADATA = {
     blockReward: 1.1721,
     blockTime: 15,
     blocksDay: 5760,
-    coinsMinedDay: 6751.296,
-    dailyEmission: 40373
+    coinsMinedDay: 6751.296
   },
   'XNA': {
     name: 'Neurai',
@@ -346,8 +317,7 @@ export const COIN_METADATA = {
     blockReward: 5000,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 7200000,
-    dailyEmission: 5718
+    coinsMinedDay: 7200000
   },
   'DERO': {
     name: 'Dero',
@@ -356,8 +326,7 @@ export const COIN_METADATA = {
     blockReward: 0.615,
     blockTime: 18,
     blocksDay: 4800,
-    coinsMinedDay: 2952,
-    dailyEmission: 2150
+    coinsMinedDay: 2952
   },
   'RXD': {
     name: 'Radiant',
@@ -366,8 +335,7 @@ export const COIN_METADATA = {
     blockReward: 25000,
     blockTime: 300,
     blocksDay: 288,
-    coinsMinedDay: 7200000,
-    dailyEmission: 5217
+    coinsMinedDay: 7200000
   },
   'ZEPH': {
     name: 'Zephyr',
@@ -376,8 +344,7 @@ export const COIN_METADATA = {
     blockReward: 7.0657048,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 5087.307,
-    dailyEmission: 6563
+    coinsMinedDay: 5087.307
   },
   'NEOX': {
     name: 'Neoxa',
@@ -386,8 +353,7 @@ export const COIN_METADATA = {
     blockReward: 2250,
     blockTime: 60,
     blocksDay: 1440,
-    coinsMinedDay: 3240000,
-    dailyEmission: 2232
+    coinsMinedDay: 3240000
   },
   'BLOCX': {
     name: 'BLOCX',
@@ -396,8 +362,7 @@ export const COIN_METADATA = {
     blockReward: 66,
     blockTime: 180,
     blocksDay: 480,
-    coinsMinedDay: 31680,
-    dailyEmission: 746
+    coinsMinedDay: 31680
   },
   'RTM': {
     name: 'Raptoreum',
@@ -406,8 +371,7 @@ export const COIN_METADATA = {
     blockReward: 3592.5,
     blockTime: 120,
     blocksDay: 720,
-    coinsMinedDay: 2586600,
-    dailyEmission: 1261
+    coinsMinedDay: 2586600
   },
   'KLS': {
     name: 'Karlsen',
@@ -416,33 +380,98 @@ export const COIN_METADATA = {
     blockReward: 35.15879532,
     blockTime: 1,
     blocksDay: 86400,
-    coinsMinedDay: 3037719.916,
-    dailyEmission: 2227
+    coinsMinedDay: 3037719.916
   }
 };
 
-export function fetchCoinData() {
-  // Transform the metadata into the format needed for the UI
-  const coins = Object.entries(COIN_METADATA).map(([symbol, data]) => {
-    const algoData = ALGO_METADATA[data.algorithm] || { 
-      hardware: 'Various', 
-      defaultUnit: 'H/s' 
+// Function to fetch coin data with prices
+export async function fetchCoinData() {
+  try {
+    // Fetch prices from CoinGecko API
+    const response = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,dogecoin,bitcoin-cash,litecoin,ethereum-classic,monero,kaspa,bitcoin-sv,conflux,nervos-network,dash,verus-coin,horizen,siacoin,chia,ravencoin,kadena,zano,flux,bitcoin-gold,clore,octaspace,firo,dynex,iron-fish,nexa,aeternity,xelis,neurai,dero,radiant,zephyr,neoxa,blocx,raptoreum,karlsen&vs_currencies=usd'
+    );
+    const priceData = await response.json();
+
+    // Map CoinGecko IDs to our symbols
+    const coinGeckoIds = {
+      'BTC': 'bitcoin',
+      'DOGE': 'dogecoin',
+      'BCH': 'bitcoin-cash',
+      'LTC': 'litecoin',
+      'ETC': 'ethereum-classic',
+      'XMR': 'monero',
+      'KAS': 'kaspa',
+      'BSV': 'bitcoin-sv',
+      'CFX': 'conflux',
+      'CKB': 'nervos-network',
+      'DASH': 'dash',
+      'VRSC': 'verus-coin',
+      'ZEN': 'horizen',
+      'SC': 'siacoin',
+      'XCH': 'chia',
+      'RVN': 'ravencoin',
+      'KDA': 'kadena',
+      'ZANO': 'zano',
+      'FLUX': 'flux',
+      'BTG': 'bitcoin-gold',
+      'CLORE': 'clore',
+      'OCTA': 'octaspace',
+      'FIRO': 'firo',
+      'DNX': 'dynex',
+      'IRON': 'iron-fish',
+      'NEX': 'nexa',
+      'AE': 'aeternity',
+      'XEL': 'xelis',
+      'XNA': 'neurai',
+      'DERO': 'dero',
+      'RXD': 'radiant',
+      'ZEPH': 'zephyr',
+      'NEOX': 'neoxa',
+      'BLOCX': 'blocx',
+      'RTM': 'raptoreum',
+      'KLS': 'karlsen'
     };
 
-    return {
+    // Transform the metadata into the format needed for the UI
+    const coins = Object.entries(COIN_METADATA).map(([symbol, data]) => {
+      const geckoId = coinGeckoIds[symbol];
+      const price = geckoId ? priceData[geckoId]?.usd || 0 : 0;
+      const dailyEmissionUSD = data.coinsMinedDay * price;
+
+      return {
+        symbol,
+        name: data.name,
+        algorithm: data.algorithm,
+        hardware: ALGO_METADATA[data.algorithm]?.hardware || 'Various',
+        defaultUnit: ALGO_METADATA[data.algorithm]?.defaultUnit || 'H/s',
+        networkHashrate: data.networkHashrate,
+        blockReward: data.blockReward,
+        blockTime: data.blockTime,
+        blocksDay: data.blocksDay,
+        coinsMinedDay: data.coinsMinedDay,
+        price: price,
+        dailyEmissionUSD: dailyEmissionUSD
+      };
+    });
+
+    return coins;
+  } catch (error) {
+    console.error('Error fetching price data:', error);
+    // Return data without prices in case of API error
+    return Object.entries(COIN_METADATA).map(([symbol, data]) => ({
       symbol,
       name: data.name,
       algorithm: data.algorithm,
-      hardware: algoData.hardware,
-      defaultUnit: algoData.defaultUnit,
+      hardware: ALGO_METADATA[data.algorithm]?.hardware || 'Various',
+      defaultUnit: ALGO_METADATA[data.algorithm]?.defaultUnit || 'H/s',
       networkHashrate: data.networkHashrate,
       blockReward: data.blockReward,
       blockTime: data.blockTime,
       blocksDay: data.blocksDay,
       coinsMinedDay: data.coinsMinedDay,
-      dailyEmission: data.dailyEmission,
-    };
-  });
-
-  return Promise.resolve(coins);
+      price: 0,
+      dailyEmissionUSD: 0
+    }));
+  }
 }
