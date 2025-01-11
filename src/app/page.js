@@ -2,7 +2,7 @@
 
 import CryptoTable from '../components/CryptoTable';
 // Ensure global styles are imported
-import '../src/styles/globals.css'; 
+import '../src/app/globals.css'; 
 
 export default function Home() {
   return (
